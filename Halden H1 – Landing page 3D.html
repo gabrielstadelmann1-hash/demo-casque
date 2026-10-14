@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Halden H1 – Casque audio sans fil</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,200..800&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg-rgb: 211,217,219;
+  --ink-rgb: 17,24,28;
+  --muted-rgb: 70,84,92;
+  --glow-rgb: 255,255,255;
+  --glow-a: .55;
+  --display: "Bricolage Grotesque", "Helvetica Neue", Arial, sans-serif;
+  --text: "Instrument Sans", "Helvetica Neue", Arial, sans-serif;
+  color-scheme: light dark;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);scroll-padding-top:env(safe-area-inset-top,0px)}
+body{
+  font-family:var(--text);
+  font-size:1.0625rem;
+  line-height:1.6;
+  background:rgb(var(--bg-rgb));
+  color:rgb(var(--ink-rgb));
+  overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+}
+body, body *{transition:color .9s ease, background-color .9s ease, border-color .9s ease}
+body::before{
+  content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:radial-gradient(62% 58% at 50% 46%, rgba(var(--glow-rgb), var(--glow-a)), transparent 72%);
+}
+a{color:inherit}
+:focus-visible{outline:2px solid rgb(var(--ink-rgb));outline-offset:3px}
+
+/* ——— calques fixes ——— */
+.wordmark{
+  position:fixed;left:50%;top:47%;z-index:1;
+  font-family:var(--display);font-weight:800;font-stretch:78%;
+  font-size:30vw;line-height:.8;letter-spacing:-.045em;
+  color:rgba(var(--ink-rgb), .075);
+  transform:translate(-50%, calc(-50% + var(--wm-y, 0px)));
+  opacity:var(--wm-o, 1);
+  white-space:nowrap;user-select:none;pointer-events:none;
+  animation:wm-in 1.8s cubic-bezier(.2,.7,.1,1) both;
+}
+#stage{
+  position:fixed;inset:0;width:100%;height:100%;z-index:2;display:block;
+  animation:stage-in 1.4s ease .15s both;
+}
+.grain{
+  position:fixed;inset:0;z-index:30;pointer-events:none;opacity:.07;mix-blend-mode:multiply;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 .9 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+}
+@keyframes wm-in{from{opacity:0;transform:translate(-50%, calc(-50% + 40px))}to{opacity:var(--wm-o,1);transform:translate(-50%, calc(-50% + var(--wm-y,0px)))}}
+@keyframes stage-in{from{opacity:0}to{opacity:1}}
+@keyframes rise{from{opacity:0;transform:translateY(26px)}to{opacity:1;transform:none}}
+@keyframes hint{0%{transform:scaleY(0);transform-origin:top}50%{transform:scaleY(1);transform-origin:top}51%{transform:scaleY(1);transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
+
+/* ——— navigation ——— */
+.nav{
+  position:fixed;top:env(safe-area-inset-top,0px);left:0;right:0;z-index:20;
+  display:flex;justify-content:space-between;align-items:center;
+  padding:1.4rem 6vw;
+}
+.logo{font-family:var(--display);font-weight:700;font-size:1.45rem;letter-spacing:-.03em;text-decoration:none}
+
+/* ——— boutons ——— */
+.btn,.pill{
+  display:inline-flex;align-items:center;justify-content:center;
+  font-family:var(--text);font-weight:600;font-size:.98rem;text-decoration:none;
+  border-radius:999px;cursor:pointer;border:1px solid rgb(var(--ink-rgb));
+  background:rgb(var(--ink-rgb));color:rgb(var(--bg-rgb));
+}
+.btn{padding:.95rem 1.7rem}
+.pill{padding:.55rem 1.15rem;font-size:.9rem}
+.btn:hover,.pill:hover{transform:translateY(-1px)}
+.btn.ghost{background:transparent;color:rgb(var(--ink-rgb));border-color:rgba(var(--ink-rgb),.35)}
+.btn.ghost:hover{border-color:rgb(var(--ink-rgb))}
+.actions{display:flex;flex-wrap:wrap;gap:.8rem;margin-top:2rem}
+
+/* ——— sections ——— */
+main{position:relative;z-index:10}
+.panel{
+  min-height:120vh;display:flex;align-items:center;
+  padding:0 6vw;
+}
+.panel.right{justify-content:flex-end}
+.copy{max-width:min(30rem, 42vw)}
+h1,h2{font-family:var(--display);font-weight:700;letter-spacing:-.035em;line-height:1;font-optical-sizing:auto}
+h1{font-size:clamp(2.6rem,5.4vw,5.4rem)}
+h2{font-size:clamp(2rem,3.7vw,3.6rem);margin-bottom:1.4rem}
+.copy p{color:rgb(var(--muted-rgb));max-width:34rem}
+.copy p + p{margin-top:1rem}
+
+.hero{min-height:100svh;align-items:flex-end;padding-bottom:9vh}
+.hero .copy{max-width:min(31rem, 44vw)}
+.hero .copy > *{animation:rise 1.1s cubic-bezier(.2,.7,.1,1) both}
+.hero h1{animation-delay:.5s}
+.hero p{animation-delay:.7s;margin-top:1.4rem}
+.hero .actions{animation-delay:.9s}
+.scroll-hint{
+  position:absolute;right:6vw;bottom:9vh;display:flex;flex-direction:column;align-items:center;gap:.7rem;
+  font-size:.85rem;color:rgb(var(--muted-rgb));
+  animation:rise 1s ease 1.4s both;
+}
+.scroll-hint span{writing-mode:vertical-rl}
+.scroll-hint i{display:block;width:1px;height:3.4rem;background:rgb(var(--ink-rgb));animation:hint 2.4s ease-in-out infinite}
+
+/* données techniques : structure réelle, pas décor */
+.facts{margin-top:2rem;border-top:1px solid rgba(var(--ink-rgb),.25)}
+.facts div{display:flex;justify-content:space-between;gap:1.5rem;padding:.8rem 0;border-bottom:1px solid rgba(var(--ink-rgb),.25);font-size:.98rem}
+.facts dt{color:rgb(var(--muted-rgb))}
+.facts dd{font-weight:600;text-align:right}
+
+/* finitions */
+.finish{flex-direction:column;justify-content:space-between;align-items:center;text-align:center;padding-top:16vh;padding-bottom:12vh;cursor:grab;touch-action:pan-y}
+.finish:active{cursor:grabbing}
+.finish h2{margin-bottom:.9rem;max-width:18ch;margin-inline:auto}
+.finish .drag{color:rgb(var(--muted-rgb));font-size:.95rem}
+.swatches{display:flex;gap:clamp(.6rem,2.4vw,1.8rem);justify-content:center;flex-wrap:wrap}
+.swatch{
+  display:flex;align-items:center;gap:.9rem;text-align:left;
+  padding:.7rem 1.3rem .7rem .7rem;border-radius:999px;cursor:pointer;
+  background:rgba(var(--bg-rgb),.55);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  border:1px solid rgba(var(--ink-rgb),.2);color:inherit;font:inherit;
+}
+.swatch:hover{border-color:rgba(var(--ink-rgb),.6)}
+.swatch[aria-checked="true"]{border-color:rgb(var(--ink-rgb));box-shadow:0 0 0 1px rgb(var(--ink-rgb))}
+.chip{width:2.8rem;height:2.8rem;border-radius:50%;flex:none;background:linear-gradient(135deg, var(--m) 0 50%, var(--w) 50% 100%);box-shadow:inset 0 0 0 1px rgba(0,0,0,.18), inset 0 2px 6px rgba(255,255,255,.35)}
+.swatch b{display:block;font-weight:600;font-size:.98rem;line-height:1.2}
+.swatch small{display:block;color:rgb(var(--muted-rgb));font-size:.82rem;line-height:1.3}
+
+/* commande */
+.price{font-family:var(--display);font-weight:700;font-size:clamp(2.6rem,4.6vw,4.4rem);letter-spacing:-.04em;line-height:1;margin:1.6rem 0 .3rem;color:rgb(var(--ink-rgb))}
+.copy .sub{font-size:.95rem}
+.status{min-height:1.5rem;margin-top:1rem;font-size:.92rem;color:rgb(var(--muted-rgb))}
+footer{position:relative;z-index:10;padding:2.5rem 6vw 3.5rem;font-size:.85rem;color:rgb(var(--muted-rgb));display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap}
+
+.no-webgl #stage{display:none}
+
+@media (max-width:820px){
+  body{font-size:1rem}
+  .nav{padding:1.1rem 5vw}
+  .panel{align-items:flex-end;padding:0 5vw 8vh;min-height:115vh}
+  .panel.right{justify-content:flex-start}
+  .copy,.hero .copy{
+    max-width:none;width:100%;
+    background:rgba(var(--bg-rgb),.74);
+    backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+    padding:1.35rem;border-radius:1.4rem;
+  }
+  .hero{padding-bottom:6vh}
+  h1{font-size:2.5rem}
+  h2{font-size:1.9rem;margin-bottom:1rem}
+  .scroll-hint{display:none}
+  .finish{justify-content:flex-end;gap:1.5rem;padding-top:0;padding-bottom:7vh}
+  .finish .head{background:rgba(var(--bg-rgb),.74);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);padding:1.2rem;border-radius:1.4rem}
+  .swatch{width:100%}
+  .wordmark{font-size:38vw;top:30%}
+}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation-duration:.01ms !important;animation-delay:0s !important;animation-iteration-count:1 !important}
+  .scroll-hint i{animation:none}
+}
+</style>
+</head>
+<body>
+
+<div class="wordmark" id="wordmark" aria-hidden="true">halden</div>
+<canvas id="stage" aria-hidden="true"></canvas>
+<div class="grain" aria-hidden="true"></div>
+
+<header class="nav">
+  <a class="logo" href="#top">Halden</a>
+  <a class="pill" href="#commande">Précommander</a>
+</header>
+
+<main>
+  <section class="panel hero" id="top">
+    <div class="copy">
+      <h1>Le silence a enfin du caractère.</h1>
+      <p>Halden H1, casque sans fil en titane brossé et noyer massif. 60 heures d’autonomie, réduction de bruit adaptative, son Hi‑Res sans compromis.</p>
+      <div class="actions">
+        <a class="btn" href="#commande">Précommander, 549 €</a>
+        <a class="btn ghost" href="#son">Découvrir le H1</a>
+      </div>
+    </div>
+    <div class="scroll-hint" aria-hidden="true"><i></i><span>Faites défiler</span></div>
+  </section>
+
+  <section class="panel" id="son">
+    <div class="copy">
+      <h2>Un transducteur béryllium de 40 mm, accordé à l’oreille.</h2>
+      <p>Le béryllium est bien plus rigide que le titane pour un poids dérisoire. Résultat : des aigus nets sans dureté et des basses qui restent propres à fort volume.</p>
+      <p>Chaque paire est mesurée puis appairée en usine à ±0,5 dB près.</p>
+      <dl class="facts">
+        <div><dt>Bande passante</dt><dd>4 Hz à 40 kHz</dd></div>
+        <div><dt>Codecs</dt><dd>LDAC, aptX Adaptive, AAC</dd></div>
+        <div><dt>Distorsion</dt><dd>&lt; 0,05 % à 1 kHz</dd></div>
+      </dl>
+    </div>
+  </section>
+
+  <section class="panel right" id="matiere">
+    <div class="copy">
+      <h2>Du noyer massif, pas un film imitation.</h2>
+      <p>Chaque plaque est découpée dans une planche de noyer européen, huilée à la main puis laquée en trois passes. Les veines ne se répètent jamais : votre casque est le seul exemplaire.</p>
+      <p>La coque est usinée dans un bloc de titane de grade 5, brossée dans le sens de la rotation. Les coussins sont en cuir d’agneau pleine fleur, sur une mousse à mémoire de forme.</p>
+    </div>
+  </section>
+
+  <section class="panel" id="silence">
+    <div class="copy">
+      <h2>Douze micros écoutent la rue à votre place.</h2>
+      <p>La réduction de bruit adaptative mesure l’environnement 48 000 fois par seconde et règle le filtre selon la forme de votre oreille.</p>
+      <p>Le mode Transparence laisse passer les voix, pas le grondement du métro.</p>
+      <dl class="facts">
+        <div><dt>Atténuation</dt><dd>jusqu’à 42 dB</dd></div>
+        <div><dt>Appels</dt><dd>6 micros à formation de faisceau</dd></div>
+      </dl>
+    </div>
+  </section>
+
+  <section class="panel right" id="autonomie">
+    <div class="copy">
+      <h2>60 heures. Une semaine de trajets sans prise.</h2>
+      <p>Dix minutes de charge USB‑C rendent 8 heures d’écoute. Le câble fourni permet aussi l’écoute filaire en USB audio 24 bits / 192 kHz, batterie à plat comprise.</p>
+      <p>Le capteur de port met la musique en pause dès que vous retirez le casque.</p>
+    </div>
+  </section>
+
+  <section class="panel finish" id="finitions">
+    <div class="head">
+      <h2>Trois finitions. Aucune n’est un compromis.</h2>
+      <p class="drag">Faites glisser pour tourner le casque. Choisissez une finition, la page s’adapte.</p>
+    </div>
+    <div class="swatches" role="radiogroup" aria-label="Finition du casque">
+      <button class="swatch" role="radio" aria-checked="true" data-f="titane" style="--m:#c3c9cd;--w:#6a4429">
+        <span class="chip"></span><span><b>Titane &amp; noyer</b><small>Coussins noirs</small></span>
+      </button>
+      <button class="swatch" role="radio" aria-checked="false" data-f="graphite" style="--m:#3a4045;--w:#1b120c">
+        <span class="chip"></span><span><b>Graphite &amp; ébène</b><small>Coussins noir profond</small></span>
+      </button>
+      <button class="swatch" role="radio" aria-checked="false" data-f="sable" style="--m:#d2bf9c;--w:#d9b98a">
+        <span class="chip"></span><span><b>Champagne &amp; érable</b><small>Coussins cuir naturel</small></span>
+      </button>
+    </div>
+  </section>
+
+  <section class="panel" id="commande">
+    <div class="copy">
+      <h2>Précommandez le H1.</h2>
+      <div class="price">549 €</div>
+      <p class="sub">Paiement en trois fois sans frais. Livraison en 48 h, 30 jours pour l’essayer, garantie 3 ans.</p>
+      <div class="actions">
+        <button class="btn" id="buy" type="button">Précommander</button>
+        <a class="btn ghost" href="#top">Revoir le H1</a>
+      </div>
+      <div class="status" id="status" role="status" aria-live="polite"></div>
+      <dl class="facts">
+        <div><dt>Transducteur</dt><dd>Béryllium, 40 mm</dd></div>
+        <div><dt>Autonomie</dt><dd>60 h, réduction de bruit active</dd></div>
+        <div><dt>Charge</dt><dd>USB‑C, 10 min = 8 h</dd></div>
+        <div><dt>Connexion</dt><dd>Bluetooth 5.4, multipoint</dd></div>
+        <div><dt>Poids</dt><dd>289 g</dd></div>
+      </dl>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <span>© 2026 Halden Audio</span>
+  <span>Page de démonstration, produit fictif.</span>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+(function(){
+  var THREE = window.THREE;
+  var RM = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var canvas = document.getElementById('stage');
+  var wordmark = document.getElementById('wordmark');
+
+  /* ——— boutique factice ——— */
+  var buy = document.getElementById('buy'), status = document.getElementById('status');
+  buy.addEventListener('click', function(){
+    status.textContent = 'Démo : aucune commande n’a été passée.';
+  });
+
+  if(!THREE){ document.documentElement.classList.add('no-webgl'); return; }
+
+  var renderer;
+  try{
+    renderer = new THREE.WebGLRenderer({canvas:canvas, antialias:true, alpha:true, powerPreference:'high-performance'});
+  }catch(e){
+    document.documentElement.classList.add('no-webgl'); return;
+  }
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+  renderer.setClearColor(0x000000, 0);
+  renderer.outputEncoding = THREE.sRGBEncoding;
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 1.0;
+
+  var scene = new THREE.Scene();
+  var camera = new THREE.PerspectiveCamera(30, 1, 0.1, 100);
+
+  /* ——— environnement studio (softboxes) pour des reflets réalistes ——— */
+  function buildEnv(){
+    var env = new THREE.Scene();
+    env.add(new THREE.Mesh(
+      new THREE.BoxGeometry(32, 22, 32),
+      new THREE.MeshBasicMaterial({color:0x151b1f, side:THREE.BackSide})
+    ));
+    function box(w, h, pos, intensity, color){
+      var m = new THREE.Mesh(
+        new THREE.PlaneGeometry(w, h),
+        new THREE.MeshBasicMaterial({color:new THREE.Color(color).multiplyScalar(intensity), side:THREE.DoubleSide})
+      );
+      m.position.set(pos[0], pos[1], pos[2]);
+      m.lookAt(0, 0, 0);
+      env.add(m);
+    }
+    box(16, 9, [0, 9.5, 2], 4.2, 0xffffff);      // softbox du dessus
+    box(3.2, 15, [-10, 1, 4], 3.6, 0xfff1e2);    // bandeau gauche, chaud
+    box(3.2, 15, [10, 1, 3], 3.0, 0xe4f2ff);     // bandeau droit, froid
+    box(11, 3, [0, -1, 12], 1.8, 0xffffff);      // remplissage bas avant
+    box(9, 2.2, [0, 3, -12], 4.0, 0xffffff);     // rim arrière
+    box(32, 32, [0, -10, 0], 0.6, 0xcfd6da);     // rebond du sol
+    var pm = new THREE.PMREMGenerator(renderer);
+    var rt = pm.fromScene(env, 0.02);
+    pm.dispose();
+    return rt.texture;
+  }
+  scene.environment = buildEnv();
+
+  var key = new THREE.DirectionalLight(0xffffff, 0.7);
+  key.position.set(3, 5, 6);
+  scene.add(key);
+
+  /* ——— textures procédurales ——— */
+  function canvasTex(w, h, draw, srgb){
+    var c = document.createElement('canvas'); c.width = w; c.height = h;
+    var g = c.getContext('2d'); draw(g, w, h);
+    var t = new THREE.CanvasTexture(c);
+    t.anisotropy = 8;
+    t.wrapS = t.wrapT = THREE.RepeatWrapping;
+    if(srgb) t.encoding = THREE.sRGBEncoding;
+    return t;
+  }
+  function hexA(h, a){
+    var n = parseInt(h.slice(1), 16);
+    return 'rgba(' + ((n >> 16) & 255) + ',' + ((n >> 8) & 255) + ',' + (n & 255) + ',' + a + ')';
+  }
+
+  var brushed = canvasTex(512, 512, function(g, w, h){
+    for(var y = 0; y < h; y++){
+      var v = 150 + Math.random() * 90;
+      g.fillStyle = 'rgb(' + v + ',' + v + ',' + v + ')';
+      g.fillRect(0, y, w, 1);
+    }
+  }, false);
+
+  var grain = canvasTex(256, 256, function(g, w, h){
+    g.fillStyle = '#808080'; g.fillRect(0, 0, w, h);
+    for(var i = 0; i < 9000; i++){
+      var v = 90 + Math.random() * 100 | 0;
+      g.fillStyle = 'rgb(' + v + ',' + v + ',' + v + ')';
+      g.beginPath();
+      g.arc(Math.random() * w, Math.random() * h, 1 + Math.random() * 1.6, 0, 7);
+      g.fill();
+    }
+  }, false);
+  grain.repeat.set(12, 6);
+
+  function woodTex(base, dark, light){
+    return canvasTex(1024, 1024, function(g, w, h){
+      g.fillStyle = base; g.fillRect(0, 0, w, h);
+      var i, y;
+      for(i = 0; i < 24; i++){
+        var cx = Math.random() * w, cy = Math.random() * h, r = 90 + Math.random() * 190;
+        g.save(); g.translate(cx, cy); g.scale(.3, 1);
+        var gr = g.createRadialGradient(0, 0, 0, 0, 0, r);
+        gr.addColorStop(0, hexA(Math.random() < .5 ? dark : light, .10));
+        gr.addColorStop(1, hexA(dark, 0));
+        g.fillStyle = gr; g.fillRect(-r, -r, r * 2, r * 2); g.restore();
+      }
+      for(i = 0; i < 300; i++){
+        var x = Math.random() * w, a = .04 + Math.random() * .2;
+        g.strokeStyle = Math.random() < .7 ? hexA(dark, a) : hexA(light, a * .8);
+        g.lineWidth = .6 + Math.random() * 3;
+        g.beginPath(); g.moveTo(x, 0);
+        for(y = 0; y <= h; y += 32){
+          x += (Math.random() - .5) * 5 + Math.sin(y * .01 + i) * 1.3;
+          g.lineTo(x, y);
+        }
+        g.stroke();
+      }
+    }, true);
+  }
+
+  var FIN = {
+    titane:  {metal:0xc3c9cd, leather:0x15110e, wood:['#6a4429', '#2b170a', '#b88a5c'],
+              theme:{bg:'211,217,219', ink:'17,24,28',   muted:'70,84,92',    glow:'255,255,255', ga:.55}},
+    graphite:{metal:0x3a4045, leather:0x0b0b0c, wood:['#2a1d15', '#050302', '#6b4b34'],
+              theme:{bg:'30,34,38',    ink:'233,238,240', muted:'150,162,170', glow:'255,255,255', ga:.09}},
+    sable:   {metal:0xd2bf9c, leather:0x8b5e3c, wood:['#d9b98a', '#8d6a3f', '#f3dfb8'],
+              theme:{bg:'227,216,199', ink:'38,28,18',    muted:'112,96,78',   glow:'255,250,240', ga:.6}}
+  };
+  Object.keys(FIN).forEach(function(k){
+    var w = FIN[k].wood; FIN[k].tex = woodTex(w[0], w[1], w[2]);
+  });
+
+  /* ——— matériaux ——— */
+  var metalMat = new THREE.MeshStandardMaterial({
+    color:FIN.titane.metal, metalness:1, roughness:.42, roughnessMap:brushed
+  });
+  var ringMat = new THREE.MeshStandardMaterial({color:0xe9edef, metalness:1, roughness:.16});
+  var woodMat = new THREE.MeshPhysicalMaterial({
+    map:FIN.titane.tex, roughness:.5, metalness:0, clearcoat:.9, clearcoatRoughness:.1
+  });
+  var leatherMat = new THREE.MeshPhysicalMaterial({
+    color:FIN.titane.leather, roughness:.55, metalness:0, bumpMap:grain, bumpScale:1.6,
+    clearcoat:.15, clearcoatRoughness:.5
+  });
+  var fabricMat = new THREE.MeshStandardMaterial({color:0x08090a, roughness:1, metalness:0});
+  var ledMat = new THREE.MeshBasicMaterial({color:new THREE.Color(0x8ff0ff).multiplyScalar(1.6)});
+
+  /* ——— géométrie du casque ——— */
+  var model = new THREE.Group();
+  scene.add(model);
+
+  function ellipseCurve(a, b, t0, t1){
+    var pts = [], n = 120;
+    for(var i = 0; i <= n; i++){
+      var t = t0 + (t1 - t0) * i / n;
+      pts.push(new THREE.Vector3(a * Math.cos(t), b * Math.sin(t), 0));
+    }
+    return new THREE.CatmullRomCurve3(pts);
+  }
+
+  var band = new THREE.Mesh(new THREE.TubeGeometry(ellipseCurve(1.65, 1.7, 0, Math.PI), 200, .075, 24, false), metalMat);
+  band.scale.z = 2.2;
+  model.add(band);
+
+  var pad = new THREE.Mesh(new THREE.TubeGeometry(ellipseCurve(1.58, 1.62, .55, Math.PI - .55), 160, .12, 24, false), leatherMat);
+  pad.scale.z = 2.0;
+  model.add(pad);
+
+  function makeCup(side){
+    var g = new THREE.Group();
+    var prof = [[0,.16],[.3,.16],[.52,.158],[.68,.135],[.77,.075],[.795,-.01],[.765,-.1],[.68,-.155],[.55,-.175],[.3,-.17],[0,-.17]]
+      .reverse()
+      .map(function(p){ return new THREE.Vector2(p[0], p[1]); });
+    var pts = new THREE.SplineCurve(prof).getPoints(90);
+    g.add(new THREE.Mesh(new THREE.LatheGeometry(pts, 128), metalMat));
+
+    var wood = new THREE.Mesh(new THREE.CircleGeometry(.6, 96).rotateX(-Math.PI / 2), woodMat);
+    wood.position.y = .1625; g.add(wood);
+
+    var ring = new THREE.Mesh(new THREE.TorusGeometry(.612, .02, 20, 128).rotateX(Math.PI / 2), ringMat);
+    ring.position.y = .16; g.add(ring);
+
+    var emblem = new THREE.Mesh(new THREE.CylinderGeometry(.075, .075, .012, 48), ringMat);
+    emblem.position.y = .169; g.add(emblem);
+
+    var cushion = new THREE.Mesh(new THREE.TorusGeometry(.5, .2, 48, 128).rotateX(Math.PI / 2), leatherMat);
+    cushion.scale.y = .85; cushion.position.y = -.22; g.add(cushion);
+
+    var fabric = new THREE.Mesh(new THREE.CircleGeometry(.34, 64).rotateX(Math.PI / 2), fabricMat);
+    fabric.position.y = -.18; g.add(fabric);
+
+    if(side > 0){
+      var led = new THREE.Mesh(new THREE.SphereGeometry(.022, 16, 16), ledMat);
+      led.position.set(0, 0, .8); g.add(led);
+    }
+
+    g.rotation.z = side > 0 ? -Math.PI / 2 : Math.PI / 2;
+    g.position.set(side * 1.38, -.95, 0);
+    g.scale.set(1.12, 1, .95);
+    return g;
+  }
+
+  [-1, 1].forEach(function(s){
+    model.add(makeCup(s));
+    var rod = new THREE.Mesh(new THREE.CylinderGeometry(.075, .075, .95, 28), metalMat);
+    rod.position.set(s * 1.65, -.475, 0); rod.scale.z = 2.2; model.add(rod);
+    var pivot = new THREE.Mesh(new THREE.CylinderGeometry(.1, .1, .3, 32).rotateZ(Math.PI / 2), ringMat);
+    pivot.position.set(s * 1.55, -.95, 0); model.add(pivot);
+  });
+  model.position.y = 0;
+
+  /* ombre portée douce */
+  var shTex = canvasTex(256, 256, function(g, w, h){
+    var gr = g.createRadialGradient(w/2, h/2, 0, w/2, h/2, w/2);
+    gr.addColorStop(0, 'rgba(0,0,0,.6)'); gr.addColorStop(.5, 'rgba(0,0,0,.22)'); gr.addColorStop(1, 'rgba(0,0,0,0)');
+    g.fillStyle = gr; g.fillRect(0, 0, w, h);
+  }, true);
+  var shadow = new THREE.Mesh(
+    new THREE.PlaneGeometry(1, 1),
+    new THREE.MeshBasicMaterial({map:shTex, transparent:true, depthWrite:false, opacity:.5})
+  );
+  shadow.rotation.x = -Math.PI / 2;
+  shadow.scale.set(5, 5, 1);
+  scene.add(shadow);
+
+  /* ——— trajectoire caméra par section ——— */
+  var K = [
+    {rx:.08,  ry:.55,  rz:0,    px:.95,  py:-.05, pz:-.7, sh:.55}, // accueil
+    {rx:.12,  ry:-.75, rz:.04,  px:2.2,  py:.05,  pz:.4,  sh:.35}, // son
+    {rx:.04,  ry:1.32, rz:0,    px:-.95, py:.95,  pz:2.7, sh:0},   // matière
+    {rx:-.18, ry:2.55, rz:-.03, px:2.3,  py:0,    pz:.2,  sh:.25}, // silence
+    {rx:.55,  ry:-.3,  rz:0,    px:-2.3, py:-.1,  pz:.6,  sh:.2},  // autonomie
+    {rx:.1,   ry:.35,  rz:0,    px:0,    py:.15,  pz:.9,  sh:.5},  // finitions
+    {rx:.06,  ry:-.55, rz:.02,  px:2.4,  py:0,    pz:0,   sh:.4}   // commande
+  ];
+  var PROPS = ['rx','ry','rz','px','py','pz','sh'];
+  var cur = {}; PROPS.forEach(function(p){ cur[p] = K[0][p]; });
+
+  var panels = Array.prototype.slice.call(document.querySelectorAll('.panel'));
+  var centers = [];
+  function measure(){
+    centers = panels.map(function(p){ return p.offsetTop + p.offsetHeight / 2; });
+  }
+  function progress(){
+    var mid = window.scrollY + window.innerHeight * .5;
+    if(mid <= centers[0]) return 0;
+    for(var i = 0; i < centers.length - 1; i++){
+      if(mid < centers[i+1]) return i + (mid - centers[i]) / (centers[i+1] - centers[i]);
+    }
+    return centers.length - 1;
+  }
+  function smooth(x){ x = Math.max(0, Math.min(1, x)); return x * x * (3 - 2 * x); }
+
+  var W = 1, H = 1, D = 9.5, mobile = false;
+  function resize(){
+    W = window.innerWidth; H = window.innerHeight;
+    renderer.setSize(W, H, false);
+    camera.aspect = W / H;
+    mobile = W / H < .9;
+    D = mobile ? Math.max(9.5, 7.6 / camera.aspect) : 9.5;
+    camera.position.set(0, .5, D);
+    camera.lookAt(0, 0, 0);
+    camera.updateProjectionMatrix();
+    measure();
+  }
+  window.addEventListener('resize', resize);
+  window.addEventListener('load', function(){ measure(); setTimeout(measure, 600); });
+  resize();
+
+  /* ——— interactions ——— */
+  var mx = 0, my = 0, mxs = 0, mys = 0;
+  window.addEventListener('pointermove', function(e){
+    mx = (e.clientX / W - .5) * 2; my = (e.clientY / H - .5) * 2;
+  });
+
+  var fin = document.getElementById('finitions');
+  var dragging = false, lastX = 0, vel = 0, dragYaw = 0, spinT = 0, spin = 0;
+  fin.addEventListener('pointerdown', function(e){
+    if(e.target.closest('button')) return;
+    dragging = true; lastX = e.clientX;
+    try{ fin.setPointerCapture(e.pointerId); }catch(_){}
+  });
+  fin.addEventListener('pointermove', function(e){
+    if(!dragging) return;
+    var dx = e.clientX - lastX; lastX = e.clientX;
+    dragYaw += dx * .008; vel = dx * .008;
+  });
+  ['pointerup','pointercancel'].forEach(function(ev){ fin.addEventListener(ev, function(){ dragging = false; }); });
+
+  var tMetal = new THREE.Color(FIN.titane.metal), tLeather = new THREE.Color(FIN.titane.leather);
+  function setFinish(name){
+    var f = FIN[name]; if(!f) return;
+    tMetal.setHex(f.metal); tLeather.setHex(f.leather);
+    woodMat.map = f.tex; woodMat.needsUpdate = true;
+    var r = document.documentElement.style, t = f.theme;
+    r.setProperty('--bg-rgb', t.bg); r.setProperty('--ink-rgb', t.ink); r.setProperty('--muted-rgb', t.muted);
+    r.setProperty('--glow-rgb', t.glow); r.setProperty('--glow-a', t.ga);
+    spinT += Math.PI * 2;
+    Array.prototype.forEach.call(document.querySelectorAll('.swatch'), function(b){
+      b.setAttribute('aria-checked', b.getAttribute('data-f') === name ? 'true' : 'false');
+    });
+  }
+  Array.prototype.forEach.call(document.querySelectorAll('.swatch'), function(b){
+    b.addEventListener('click', function(){ setFinish(b.getAttribute('data-f')); });
+  });
+
+  /* ——— boucle ——— */
+  var last = performance.now(), t0 = last;
+  function frame(now){
+    requestAnimationFrame(frame);
+    if(document.hidden) return;
+    var dt = Math.min(.05, (now - last) / 1000); last = now;
+    var time = (now - t0) / 1000;
+
+    var p = progress();
+    var i = Math.min(K.length - 2, Math.floor(p));
+    var f = Math.min(1, p - i);
+    var e = smooth((f - .25) / .5);
+    var a = K[i], b = K[i + 1];
+
+    var halfH = D * Math.tan(THREE.MathUtils.degToRad(15));
+    var up = mobile ? halfH * .42 : 0;
+    var k = RM ? 1 : 1 - Math.pow(.001, dt);
+
+    PROPS.forEach(function(n){
+      var tg = a[n] + (b[n] - a[n]) * e;
+      if(mobile){
+        if(n === 'px') tg *= .15;
+        if(n === 'py') tg += up;
+        if(n === 'pz') tg *= D / 9.5;
+      }
+      cur[n] += (tg - cur[n]) * k;
+    });
+
+    var inFinish = p > 4.4 && p < 5.6;
+    if(!dragging){
+      dragYaw += vel; vel *= .94;
+      if(!inFinish) dragYaw *= .96;
+    }
+    spin += (spinT - spin) * (RM ? 1 : .06);
+    mxs += (mx - mxs) * .05; mys += (my - mys) * .05;
+
+    var intro = RM ? 1 : Math.min(1, time / 2.4);
+    var introE = 1 - Math.pow(1 - intro, 3);
+    var idle = RM ? 0 : Math.sin(time * .45) * .1;
+    var bob  = RM ? 0 : Math.sin(time * .9) * .05;
+
+    model.position.set(cur.px, cur.py + bob, cur.pz);
+    model.rotation.set(
+      cur.rx - mys * .05,
+      cur.ry + idle + dragYaw + spin + mxs * .12 + (1 - introE) * -1.5,
+      cur.rz
+    );
+    var sc = .92 + .08 * introE;
+    model.scale.setScalar(sc);
+
+    shadow.position.set(cur.px, -2.75 + (mobile ? up : 0), cur.pz);
+    shadow.material.opacity = cur.sh * introE * .9;
+
+    metalMat.color.lerp(tMetal, .07);
+    leatherMat.color.lerp(tLeather, .07);
+
+    var sy = window.scrollY, hh = H * .9;
+    var wo = Math.max(0, 1 - sy / hh);
+    wordmark.style.setProperty('--wm-o', wo.toFixed(3));
+    wordmark.style.setProperty('--wm-y', (sy * .22).toFixed(1) + 'px');
+
+    camera.lookAt(0, 0, 0);
+    renderer.render(scene, camera);
+  }
+  requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>
